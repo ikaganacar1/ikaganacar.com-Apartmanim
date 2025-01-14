@@ -1,0 +1,9 @@
+ignored
+receipts
+venv
+site.db
+secret_key.txt
+__pycache__
+temp
+.venv
+flask_session

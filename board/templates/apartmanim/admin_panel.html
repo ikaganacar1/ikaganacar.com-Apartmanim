@@ -1,0 +1,201 @@
+{% extends "base.html" %} {% block div %}
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='apartmanim/admin_panel.css') }}" />
+
+<nav class="navbar navbar-inverse visible-xs">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Apartmanım</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a href="{{url_for('admin_panel')}}">Kontrol Paneli</a>
+                </li>
+                <li><a href="{{url_for('add_user')}}">Daire Ekleme/Çıkarma</a></li>
+                <li><a href="{{url_for('payment_record')}}">Aidat Kaydı</a></li>
+                <li><a href="{{url_for('financial')}}">Gelir/Gider</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row content">
+        <div class="col-sm-3 sidenav hidden-xs">
+            <h2>Apartmanım</h2>
+
+            <ul class="nav nav-pills nav-stacked">
+                <li class="active">
+                    <a href="{{url_for('admin_panel')}}">Kontrol Paneli</a>
+                </li>
+                <li><a href="{{url_for('add_user')}}">Daire Ekleme/Çıkarma</a></li>
+                <li><a href="{{url_for('payment_record')}}">Aidat Kaydı</a></li>
+                <li><a href="{{url_for('financial')}}">Gelir/Gider</a></li>
+            </ul>
+            <br />
+        </div>
+
+        <div class="col-sm-9 main-content">
+
+            <div class="dashboard-header">
+                <h4>Kontrol Paneli</h4>
+                <div class="header-buttons">
+                    <a href="javascript:history.back()" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <a href="{{url_for('logout')}}" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="well">
+                <p>Yönetici Kontrol Paneline Hoşgeldin!</p>
+            </div>
+
+            <div class="row dashboard-stats">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="well">
+                        <h4>Toplam Alacak Borç</h4>
+                        <p>{{total_debt}} TL</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-sm-4 col-xs-12">
+                    <div class="card">
+                        <h5>Daire Ekleme</h5>
+                        <!--<p>Buradan Daire profili oluşturabilirsiniz.</p>-->
+                        <a href="{{url_for('add_user')}}" class="btn btn-custom">Devam Et</a>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-xs-12">
+                    <div class="card">
+                        <h5>Aidat Kaydı</h5>
+                        <!--<p>Buradan Aidat kaydı tutabilirsin.</p>-->
+                        <a href="{{url_for('payment_record')}}" class="btn btn-custom">Devam Et</a>
+                    </div>
+                </div>
+
+                <div class="col-sm-4 col-xs-12">
+                    <div class="card">
+                        <h5>Gelir/Gider</h5>
+
+                        <a href="{{url_for('financial')}}" class="btn btn-custom">Devam et</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data must come from database -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="well">
+                        <h4>Apartman Sakinleri</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Kapı No</th>
+                                    <th>İsim Soyisim</th>
+                                    <th>Telefon</th>
+                                    <th>Borç</th>
+                                    <th>Son Ödeme</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for resident in residents %}
+                                <tr>
+                                    <td>
+                                        <a
+                                            href="{{url_for('resident_page',resident_id=resident.id)}}">{{resident.door_number}}</a>
+                                    </td>
+                                    <td>
+                                        <a href="{{url_for('resident_page',resident_id=resident.id)}}">{{resident.name}}
+                                            {{resident.surname}}</a>
+                                    </td>
+                                    <td>
+                                        <a
+                                            href="{{url_for('resident_page',resident_id=resident.id)}}">{{resident.phone_number}}</a>
+                                    </td>
+
+                                    {% if resident.last_payment_month %}
+                                    <td>
+                                        <a href="{{url_for('resident_page',resident_id=resident.id)}}">{{resident.debt}}
+                                            ay</a>
+                                    </td>
+                                    <td>
+                                        <a
+                                            href="{{url_for('resident_page',resident_id=resident.id)}}">{{resident.last_payment_month}}</a>
+                                    </td>
+                                    {% else %}
+                                    <td>
+                                        <a href="{{url_for('resident_page',resident_id=resident.id)}}">0 ay</a>
+                                    </td>
+                                    <td>
+                                        <a href="{{url_for('resident_page',resident_id=resident.id)}}">--</a>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <!--
+                <div class="col-sm-8 col-xs-12">
+                    <div class="well">
+                        <h4>Additional Information</h4>
+                        <p>Detailed content goes here.</p>
+                    </div>
+                </div>-->
+                <div class="col-sm-6 col-xs-12">
+                    <div class="well">
+                        <h4>Kaynak Kodu</h4>
+                        <ul>
+                            <li>
+                                <a href="https://github.com/ikaganacar1/ikaganacar.com">Github</a>
+                            </li>
+                            <!--<li><a href="#">Link Two</a></li>
+                            <li><a href="#">Link Three</a></li>-->
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xs-12">
+                    <div class="well">
+                        <h4>Bağış</h4>
+                        <ul>
+                            <li>
+                                <a href="https://ikaganacar.com/donation">Teşekkür Ederim :)</a>
+
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
